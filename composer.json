@@ -1,0 +1,11 @@
+{
+    "name": "vendor/simplePhpCache",
+    "description": "This very small lib is for caching in php apps.",
+    "authors": [
+        {
+            "name": "JT Knabenschuh",
+            "email": "jtkdevelopments@gmail.com"
+        }
+    ],
+    "require": {}
+}
