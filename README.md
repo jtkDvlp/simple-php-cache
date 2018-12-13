@@ -6,10 +6,6 @@ This very small lib is for caching in php apps. The caching is very simple. It s
 
 See for Usage the "example.php" file in the root directory.
 
-## IDE
-
-The project is created with Netbeans 8.
-
 ## License
 
 See for license the "LICENSE" file in the root directory.
