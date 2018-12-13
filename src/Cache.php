@@ -1,4 +1,4 @@
-<?php
+<?php namespace jtk\simplePhpCache;
 
 abstract class Cache
 {
@@ -7,6 +7,10 @@ abstract class Cache
   public abstract function set($identifier, $data);
   public abstract function clear();
 
+  /**
+   * @param callable $func
+   * @return callable
+   */
   public function wrap($func)
   {
     return function() use ($func)

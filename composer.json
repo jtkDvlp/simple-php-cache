@@ -1,11 +1,20 @@
 {
-    "name": "vendor/simplePhpCache",
-    "description": "This very small lib is for caching in php apps.",
+    "name": "jtk/simplePhpCache",
+    "description": "Very small and simple lib for caching",
+    "keywords": ["cache", "filecache", "memorycache", "arraycache"],
+    "homepage": "http://github.com/jtkDvlp/simplePhpCache",
+    "type": "library",
+    "license": "MIT",
     "authors": [
         {
-            "name": "JT Knabenschuh",
+            "name": "jtkDvlp",
             "email": "jtkdevelopments@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+      "php": ">=5.5.0"
+    },
+    "autoload": {
+        "psr-4": {"jtk\\simplePhpCache\\": "src"}
+    }
 }

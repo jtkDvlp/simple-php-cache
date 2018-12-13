@@ -1,7 +1,8 @@
-<?php
+<?php 
+use jtk\simplePhpCache\FileCache;
+use jtk\simplePhpCache\ArrayCache;
 
-require_once('./FileCache.php');
-require_once('./MemoryCache.php');
+require __DIR__ . '/vendor/autoload.php';
 
 session_start();
 
@@ -40,7 +41,7 @@ if(!file_exists('./cache/'))
   mkdir('./cache/');
 }
 
-$filecache = new FileCache('./cache/', 50);
+$filecache = new FileCache(__DIR__.'/cache/', 50);
 //$cache->clear();
 example($filecache);
 
@@ -54,7 +55,7 @@ if(!isset($_SESSION['cache']))
   $_SESSION['cache'] = [];
 }
 
-$sessioncache = new MemoryCache(
+$sessioncache = new ArrayCache(
   $_SESSION['cache']);
 //$cache->clear();
 example($sessioncache);
