@@ -1,6 +1,6 @@
 <?php 
-use jtk\simplePhpCache\FileCache;
-use jtk\simplePhpCache\ArrayCache;
+use jtk\simple_php_cache\FileCache;
+use jtk\simple_php_cache\ArrayCache;
 
 require __DIR__ . '/vendor/autoload.php';
 

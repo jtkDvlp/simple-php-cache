@@ -1,4 +1,4 @@
-<?php namespace jtk\simplePhpCache;
+<?php namespace jtk\simple_php_cache;
 
 class FileCache extends Cache
 {
