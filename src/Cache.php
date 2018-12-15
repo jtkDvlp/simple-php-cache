@@ -4,9 +4,10 @@ abstract class Cache
 {
   /**
    * @param string $identifier
-   * @return string
+   * @param mixed $default
+   * @return mixed
    */
-  public abstract function get($identifier);
+  public abstract function get($identifier, $default = null);
   
   /**
    * @param string $identifier
@@ -34,8 +35,7 @@ abstract class Cache
       $arguments = func_get_args();
       $identifier = sha1(serialize($arguments));
 
-      return $this->has($identifier) ?
-        $this->get($identifier) :
+      return $this->get($identifier) ?:
         $this->set($identifier,
           call_user_func_array(
             $func,
@@ -49,10 +49,7 @@ abstract class Cache
    * @return mixed
    */
   public function with($func, $identifier) {
-    $cachedValue = $this->has($identifier) ?
-      $this->get($identifier) :
-      null;
-    
+    $cachedValue = $this->get($identifier, null);
     $funcResult = call_user_func($func, $cachedValue);
     $this->set($identifier, $cachedValue);
     

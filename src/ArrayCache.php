@@ -16,11 +16,12 @@ class ArrayCache extends Cache
 
   /**
    * @param string $identifier
+   * @param mixed $default
    * @return mixed
    */
-  public function get($identifier)
+  public function get($identifier, $default = null)
   {
-    return $this->array[$identifier];
+    return $this->array[$identifier] ?: $default;
   }
 
   /**
