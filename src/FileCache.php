@@ -28,7 +28,7 @@ class FileCache extends Cache
   public function __destruct()
   {
     unset($this->memoryCache);
-    $this->clearSize();
+    $this->clearToSize();
   }
 
   /**
@@ -96,7 +96,7 @@ class FileCache extends Cache
     return $this->path . sha1($identifier);
   }
   
-  private function clearSize()
+  private function clearToSize()
   {
     $files = $this->determineAgeSortedFiles();
     for($i = count($files)-1; $i >= $this->size; --$i)
@@ -105,7 +105,6 @@ class FileCache extends Cache
     }
   }
 
-  // TODO: Create one meta file to manage this not reading directory index
   private function determineAgeSortedFiles()
   {
     $files = [];
