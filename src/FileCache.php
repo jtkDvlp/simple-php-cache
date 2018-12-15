@@ -3,32 +3,32 @@
 class FileCache extends Cache
 {
   /** @var string */
-  private $path;
+  private $directory;
 
   /** @var int */
-  private $size;
+  private $itemLimit;
   
   /** @var Cache */
-  private $memoryCache;
+  private $inMemory;
 
 
   /**
-   * @param string $path
-   * @param int $size
+   * @param string $directory
+   * @param int $itemLimit
    */
-  public function __construct($path, $size)
+  public function __construct($directory, $itemLimit)
   {
-    $this->path = $path;
-    $this->size = $size;
+    $this->directory = $directory;
+    $this->itemLimit = $itemLimit;
     
     $memory = [];
-    $this->memoryCache = new ArrayCache($memory);
+    $this->inMemory = new ArrayCache($memory);
   }
 
   public function __destruct()
   {
-    unset($this->memoryCache);
-    $this->clearToSize();
+    unset($this->inMemory);
+    $this->limitItemCount();
   }
 
   /**
@@ -37,12 +37,12 @@ class FileCache extends Cache
    */
   public function get($identifier)
   {
-    return $this->memoryCache->has($identifier) ?
-      $this->memoryCache->get($identifier) :
-      $this->memoryCache->set($identifier, 
+    return $this->inMemory->has($identifier) ?
+      $this->inMemory->get($identifier) :
+      $this->inMemory->set($identifier, 
         unserialize(
           file_get_contents(
-            $this->determineFilepath($identifier))));
+            $this->determineItemPath($identifier))));
   }
 
   /**
@@ -51,8 +51,8 @@ class FileCache extends Cache
    */
   public function has($identifier)
   {
-    return $this->memoryCache->has($identifier) || 
-           file_exists($this->determineFilepath($identifier));
+    return $this->inMemory->has($identifier) || 
+           file_exists($this->determineItemPath($identifier));
   }
 
   /**
@@ -63,27 +63,27 @@ class FileCache extends Cache
   public function set($identifier, $data)
   {
     file_put_contents(
-      $this->determineFilepath($identifier),
+      $this->determineItemPath($identifier),
       serialize($data),
       LOCK_EX);
     
-    $this->memoryCache->set($identifier, $data);
+    $this->inMemory->set($identifier, $data);
 
     return $data;
   }
 
   public function clear()
   {
-    $this->memoryCache->clear();
+    $this->inMemory->clear();
 
-    $directory = dir($this->path);
+    $directory = dir($this->directory);
     if($directory != false)
     {
       while(($entry = $directory->read()) != false)
       {
-        if(is_file($this->path . $entry))
+        if(is_file($this->directory . $entry))
         {
-          unlink($this->path . $entry);
+          unlink($this->directory . $entry);
         }
       }
 
@@ -91,17 +91,17 @@ class FileCache extends Cache
     }
   }
 
-  private function determineFilepath($identifier)
+  private function determineItemPath($identifier)
   {
-    return $this->path . sha1($identifier);
+    return $this->directory . sha1($identifier);
   }
   
-  private function clearToSize()
+  private function limitItemCount()
   {
     $files = $this->determineAgeSortedFiles();
-    for($i = count($files)-1; $i >= $this->size; --$i)
+    for($i = count($files)-1; $i >= $this->itemLimit; --$i)
     {
-      unlink($this->path . $files[$i]);
+      unlink($this->directory . $files[$i]);
     }
   }
 
@@ -109,14 +109,14 @@ class FileCache extends Cache
   {
     $files = [];
 
-    $directory = dir($this->path);
+    $directory = dir($this->directory);
     if($directory != false)
     {
       while(($entry = $directory->read()) != false)
       {
-        if(is_file($this->path . $entry))
+        if(is_file($this->directory . $entry))
         {
-          $files[$entry] = filemtime($this->path . $entry);
+          $files[$entry] = filemtime($this->directory . $entry);
         }
       }
       $directory->close();

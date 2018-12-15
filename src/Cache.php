@@ -42,4 +42,20 @@ abstract class Cache
             $arguments));
     };
   }
+  
+  /**
+   * @param callback $func
+   * @param string $identifier
+   * @return mixed
+   */
+  public function with($func, $identifier) {
+    $cachedValue = $this->has($identifier) ?
+      $this->get($identifier) :
+      null;
+    
+    $funcResult = call_user_func($func, $cachedValue);
+    $this->set($identifier, $cachedValue);
+    
+    return $funcResult;
+  }
 }
