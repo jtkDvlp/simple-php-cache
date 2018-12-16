@@ -33,27 +33,31 @@ class FileCache extends Cache
 
   /**
    * @param string $identifier
-   * @param mixed $default
-   * @return mixed
-   */
-  public function get($identifier, $default = null)
-  {
-    return $this->inMemory->get($identifier, null) ?:
-      $this->inMemory->set($identifier, 
-        (unserialize(
-          file_get_contents(
-            $this->determineItemPath($identifier))) ?:
-        $default));
-  }
-
-  /**
-   * @param string $identifier
    * @return boolean
    */
   public function has($identifier)
   {
     return $this->inMemory->has($identifier) || 
            file_exists($this->determineItemPath($identifier));
+  }
+
+  /**
+   * @param string $identifier
+   * @param mixed $default
+   * @return mixed
+   */
+  public function get($identifier, $default = null)
+  {
+    $filepath = $this->determineItemPath($identifier);
+    
+    $cached = $this->inMemory->get($identifier, null) ?:
+      $this->inMemory->set($identifier, 
+        (unserialize(
+          file_get_contents($filepath)) ?:
+        $default));
+    
+    touch($filepath);
+    return $cached;
   }
 
   /**

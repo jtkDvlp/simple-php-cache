@@ -33,7 +33,7 @@ abstract class Cache
     return function() use ($func)
     {
       $arguments = func_get_args();
-      $identifier = sha1(serialize($arguments));
+      $identifier = $this->identifierOf($arguments);
 
       return $this->get($identifier) ?:
         $this->set($identifier,
@@ -45,14 +45,30 @@ abstract class Cache
   
   /**
    * @param callback $func
-   * @param string $identifier
+   * @param string|mixed $identifier
    * @return mixed
    */
   public function with($func, $identifier) {
+    $identifier = is_string($identifier) ? 
+      $identifier : 
+      $this->identifierOf($identifier);
+    
     $cachedValue = $this->get($identifier, null);
+    $alreadyCached = null !== $cachedValue;
     $funcResult = call_user_func($func, $cachedValue);
-    $this->set($identifier, $cachedValue);
+    
+    if(false === $alreadyCached) {
+      $this->set($identifier, $cachedValue);
+    }
     
     return $funcResult;
+  }
+  
+  /**
+   * @param mixed $data
+   * @return string
+   */
+  public function identifierOf($data) {
+    return sha1(serialize($data));
   }
 }
