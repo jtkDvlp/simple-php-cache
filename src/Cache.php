@@ -55,7 +55,7 @@ abstract class Cache
     
     $cachedValue = $this->get($identifier, null);
     $alreadyCached = null !== $cachedValue;
-    $funcResult = call_user_func($func, $cachedValue);
+    $funcResult = $func($cachedValue);
     
     if(false === $alreadyCached) {
       $this->set($identifier, $cachedValue);
