@@ -44,6 +44,8 @@ abstract class Cache
   }
   
   /**
+   * Only makes sense to use if cached value will taken by reference.
+   * 
    * @param callback $func
    * @param string|mixed $identifier
    * @return mixed
